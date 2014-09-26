@@ -127,7 +127,6 @@ def set_methane(model, kc_file, CH3D_scale=None, verbose=False):
     return
     
 
-
 def print_atmosphere_details(model):
     print('model dictionary data structure:')
     for item in model.keys():
@@ -154,7 +153,7 @@ def set_cia(model, show_figure=False):
     fits.close()
 
     fits = pyfits.open(os.path.join(os.getenv('RTDATAPATH'), 
-                                    'gas_opacity/CIA/CIA/H2_N2.fits')
+                                    'gas_opacity/CIA/H2_N2.fits'))
     k_H2N2 = fits[0].data
     fits.close()
 

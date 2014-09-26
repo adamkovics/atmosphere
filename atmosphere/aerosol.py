@@ -9,8 +9,12 @@ import os
 pi = 3.141592653589793
 
 datapath = os.path.join(os.getenv('RTDATAPATH'),'aerosol/titan/')
-Tomasko = {'lo':np.genfromtxt(datapath+'Tomasko2007_phase_0-80km.dat',  names=True),
-           'hi':np.genfromtxt(datapath+'Tomasko2007_phase_80-200km.dat', names=True)}
+
+try:
+    Tomasko = {'lo':np.genfromtxt(datapath+'Tomasko2007_phase_0-80km.dat',  names=True),
+               'hi':np.genfromtxt(datapath+'Tomasko2007_phase_80-200km.dat', names=True)}
+except:
+    None
 
 def set_opacity(model, method='altitude'):
     """Set aerosol haze opacity for atmosphere data structure, model, using
