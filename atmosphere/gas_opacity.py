@@ -146,12 +146,15 @@ def set_cia(model, show_figure=False):
 
     from scipy.interpolate import interp1d
     import pyfits
+    import os
 
-    fits = pyfits.open('/Users/mate/data/k/spectra/CIA/N2_N2.fits')
+    fits = pyfits.open(os.path.join(os.getenv('RTDATAPATH'), 
+                                    'gas_opacity/CIA/N2_N2.fits'))
     k_N2N2 = fits[0].data
     fits.close()
 
-    fits = pyfits.open('/Users/mate/data/k/spectra/CIA/H2_N2.fits')
+    fits = pyfits.open(os.path.join(os.getenv('RTDATAPATH'), 
+                                    'gas_opacity/CIA/CIA/H2_N2.fits')
     k_H2N2 = fits[0].data
     fits.close()
 

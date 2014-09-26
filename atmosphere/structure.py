@@ -10,12 +10,13 @@ dtype_HASI = [('time', int), # time [milliseconds]
               ('p', float),  # pressure [Pa]
               ('T', float),  # temperature [K]
               ('n', float)]  # densitgy [kg/m^3]
-
-HASI = np.genfromtxt(file_HASI, dtype=dtype_HASI) 
-
-HASI['z'] *= 1e-3 # convert [m] to [km]
-HASI['p'] *= 0.01 # convert [Pa] to [mbar]
-HASI['n'] *= 1e3 * 1e-6 * 6.0221e23 / 27.8  # convert [kg/m^3] to [cm-3]
+try:
+  HASI = np.genfromtxt(file_HASI, dtype=dtype_HASI) 
+  HASI['z'] *= 1e-3 # convert [m] to [km]
+  HASI['p'] *= 0.01 # convert [Pa] to [mbar]
+  HASI['n'] *= 1e3 * 1e-6 * 6.0221e23 / 27.8  # convert [kg/m^3] to [cm-3]
+except:
+  None
 
 amg = 2.6867805e19 # [cm-3]
 
