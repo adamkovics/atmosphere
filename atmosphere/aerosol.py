@@ -11,8 +11,8 @@ pi = 3.141592653589793
 datapath = os.path.join(os.getenv('RTDATAPATH'),'aerosol/titan/')
 
 try:
-    Tomasko = {'lo':np.genfromtxt(datapath+'Tomasko2007_phase_0-80km.dat',  names=True),
-               'hi':np.genfromtxt(datapath+'Tomasko2007_phase_80-200km.dat', names=True)}
+    Tomasko = {'lo':np.genfromtxt(datapath+'Tomasko2007_phase_0-80km.TAB',  names=True),
+               'hi':np.genfromtxt(datapath+'Tomasko2007_phase_80-200km.TAB', names=True)}
 except:
     None
 
