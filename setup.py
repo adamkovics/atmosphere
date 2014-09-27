@@ -14,7 +14,6 @@ cdisort = Extension('_cdisort',
                      extra_compile_args=['-fno-strict-aliasing',
                                          '-fno-common',
                                          '-dynamic',
-                                         '-Qunused-arguments',
                                          ],
                     )
 
