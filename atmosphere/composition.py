@@ -32,23 +32,18 @@ def CH4_Niemann(z, pressure=False):
           otherwise the bounds error returns nans.
     """
 
-    from scipy.interpolate import interp1d
-
     Niemann_data = [[134,114.5,85.5,43,37.5,32.5,
                  27,23,19,16,12.5,10.5,7,4,2],             
                 [.014,.014,.014,.016,.016,.015,.017,.020,
                  .022,.025,.032,.038,.046,.049,.049]]
     
     if pressure:
-        f_CH4 = interp1d(pressure_at_altitude(Niemann_data[0]), 
-                         Niemann_data[1], 
-                         bounds_error=False)
-        m_CH4 = f_CH4(z)    
+        m_CH4 = np.interp(z, pressure_at_altitude(Niemann_data[0]), Niemann_data[1])
+
     else:
-        f_CH4 = interp1d(np.log10(Niemann_data[0]), 
-                 Niemann_data[1], 
-                 bounds_error=False)
-        m_CH4 = f_CH4(np.log10(z))
+        m_CH4 = np.interp(np.log10(z), 
+                          np.log10(Niemann_data[0][::-1]),
+                          Niemann_data[1][::-1],)
 
     if m_CH4.size == 1 :
         if np.isnan(m_CH4) :

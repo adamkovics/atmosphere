@@ -143,7 +143,6 @@ def set_cia(model, show_figure=False):
     N2-N2 and H2-N2 (in the near-IR) to the atmosphere 
     data structure, model."""
 
-    from scipy.interpolate import interp1d
     import pyfits
     import os
 
@@ -168,13 +167,12 @@ def set_cia(model, show_figure=False):
     N0 = 2.686e19 # Loschmidt number
     
     for i in range(model['nlay']):
-        f_H2N2 = interp1d((1e4/k_H2N2[:,0]), 4*k_H2N2[:,1], 
-                          bounds_error=False, fill_value=0.)
-        f_N2N2 = interp1d((1e4/k_N2N2[:,0]), 4*k_N2N2[:,1], 
-                          bounds_error=False, fill_value=0.)
-        k_H2N2_interp = f_H2N2(model['wavelength'])
-        k_N2N2_interp = f_N2N2(model['wavelength'])
-        
+        k_H2N2_interp = np.interp(model['wavelength'],
+                                  (1e4/k_H2N2[::-1,0]), 4*k_H2N2[::-1,1],)
+
+        k_N2N2_interp = np.interp(model['wavelength'],
+                                  (1e4/k_N2N2[::-1,0]), 4*k_N2N2[::-1,1],)
+
         tau_H2N2[i,:] = k_H2N2_interp*layers['kmamg'][i] * \
                         layers['n'][i]/N0 * \
                         layers['m_N2'][i]*layers['m_H2']
