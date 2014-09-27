@@ -13,7 +13,7 @@ def set_abundances(model, trace_gas={'m_H2':0.001}):
     """
 
     model['layers'].update(
-        {'m_CH4':CH4_Niemann(model['layers']['p'], pressure=True),
+        {'m_CH4':CH4_Niemann(model['layers']['z']),
          'N_CH4':integrate_CH4_column(model['layers']),
          })
 
@@ -36,35 +36,14 @@ def CH4_Niemann(z, pressure=False):
                  27,23,19,16,12.5,10.5,7,4,2],             
                 [.014,.014,.014,.016,.016,.015,.017,.020,
                  .022,.025,.032,.038,.046,.049,.049]]
-    
+
     if pressure:
         m_CH4 = np.interp(z, pressure_at_altitude(Niemann_data[0]), Niemann_data[1])
 
     else:
         m_CH4 = np.interp(np.log10(z), 
-                          np.log10(Niemann_data[0][::-1]),
+                          np.log10(Niemann_data[0][::-1]), 
                           Niemann_data[1][::-1],)
-
-    if m_CH4.size == 1 :
-        if np.isnan(m_CH4) :
-            if pressure:
-                if (np.array(z) > 1329):
-                    m_CH4 = np.array(0.049)
-                    print('Input pressure exceeds surface pressure.')
-                else:
-                    m_CH4 = np.array(0.0014)
-            else:
-                if (np.array(z) < 2):
-                    m_CH4 = np.array(0.049)
-                else:
-                    m_CH4 = np.array(0.0014)
-    else :
-        if pressure:
-            m_CH4[np.where(np.isnan(m_CH4) & (np.array(z) > 1329) )] = 0.049
-            m_CH4[np.where(np.isnan(m_CH4) & (np.array(z) < 3.74) )] = 0.014
-        else:
-            m_CH4[np.where(np.isnan(m_CH4) & (np.array(z) < 2) )] = 0.049
-            m_CH4[np.where(np.isnan(m_CH4) & (np.array(z)>134) ) ] = 0.014
 
     return m_CH4
 
