@@ -69,7 +69,7 @@ def mono(mono_input):
     return flup, u0u[0]
 
 
-def get_tau_ssa(model, verbose=False):
+def get_tau_ssa(model, w_haze=0.96, verbose=False):
     """Return cumulative layer optical depths and 
     single scattering abledos from atmosphere data structure."""
 
@@ -105,6 +105,6 @@ def get_tau_ssa(model, verbose=False):
         if verbose: print('Adding {:s} to total'.format(item))
         tau_total += model['layers']['tau'][item]
 
-    ssa = tau_haze / tau_total
+    ssa = w_haze * (tau_haze / tau_total)
     
     return tau_total, ssa

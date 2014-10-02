@@ -117,6 +117,7 @@ def set_methane(model, kc_file, CH3D_scale=None, verbose=False):
                       'nlam':len(hdu[1].data['wavelength']), 
                       })                        
 
+        hdu.close()
         append_kc_to_layers(model, kc, 'CH4')
         tau_CH4 = model['layers']['kc']['CH4'] * np.reshape(model['layers']['N_CH4'], 
                                                            (model['nlay'],1,1))
@@ -138,7 +139,7 @@ def print_atmosphere_details(model):
         print("{0:7s} -  type: {2} - shape: {1}".format(
             item, shape(model['layers'][item]), type(model['layers'][item])))
 
-def set_cia(model, show_figure=False):
+def set_cia(model, scale=4.0, show_figure=False):
     """Append collision-induced-absorption opacity for
     N2-N2 and H2-N2 (in the near-IR) to the atmosphere 
     data structure, model."""
@@ -168,10 +169,10 @@ def set_cia(model, show_figure=False):
     
     for i in range(model['nlay']):
         k_H2N2_interp = np.interp(model['wavelength'],
-                                  (1e4/k_H2N2[::-1,0]), 4*k_H2N2[::-1,1],)
+                                  (1e4/k_H2N2[::-1,0]), scale*k_H2N2[::-1,1],)
 
         k_N2N2_interp = np.interp(model['wavelength'],
-                                  (1e4/k_N2N2[::-1,0]), 4*k_N2N2[::-1,1],)
+                                  (1e4/k_N2N2[::-1,0]), scale*k_N2N2[::-1,1],)
 
         tau_H2N2[i,:] = k_H2N2_interp*layers['kmamg'][i] * \
                         layers['n'][i]/N0 * \
