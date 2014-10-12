@@ -61,8 +61,16 @@ __Dependencies__
 	pyfits
 
 Running in the IPython notebook is recommended but not necessary.
-The CDISORT implementation included here requires SWIG for 
+The [CDISORT](http://www.libradtran.org/bin/cdisort-2.1.3.tar.gz) 
+implementation included here, provided by Tim Dowling via 
+[libradtran](http://www.libradtran.org/) requires SWIG for 
 compilation at install.
+
+
+__Copying__
+
+This software is licenced under the 
+[GNU Generel Public License](http://www.gnu.org/licenses/gpl.txt)
 
 __To-do__
 
