@@ -97,12 +97,12 @@ def legendre_eval(x,coeff):
         
     return -0.5*y[:,1] + x*y[:,0] + coeff[0]
 
-def phase_fit(deg, phase, n_order, efunc=None):
+def phase_fit(deg, phase, order, efunc=None):
     """Fit Legendre polynomials to DISR phase function.
     
         phase   - scattering phase amplitude 
         deg     - scattering angle (degrees)
-        n_order - maximum order of Legendre polynomial
+        order - maximum order of Legendre polynomial
         efunc   - phase functin error estimate
     """
     
@@ -121,7 +121,7 @@ def phase_fit(deg, phase, n_order, efunc=None):
     if not efunc: efunc = lambda x: 0.10
     error = efunc(degint)*yint
     
-    fit_coeffs = leastsq(residuals, np.ones(n_order+1), args=(yint, xint, error))
+    fit_coeffs = leastsq(residuals, np.ones(order+1), args=(yint, xint, error))
     
     return fit_coeffs[0]
 
@@ -149,11 +149,9 @@ def fit_DISR_phases():
     return DISR 
 
 
-def show_phase_fit(wavelength, axs=None, efunc=None):
-    """Plot DISR phase function and Legendre fit of order
-    n_order at given wavelength. Low altitude phase is fit
-    and high altitude phase function is also plotted for 
-    illustration. """
+def show_phase_fit(wavelength, order=None, axs=None, efunc=None):
+    """Plot DISR phase functions and Legendre fit at given wavelength. 
+    Default order=64."""
 
     from matplotlib import gridspec
     
@@ -167,40 +165,52 @@ def show_phase_fit(wavelength, axs=None, efunc=None):
         ax = axs[0]
         axr = axs[1]
         
-    orders = [48,64]
-    if wavelength > 1000 : orders = [32,48]
-    if wavelength > 1500 : orders = [24,32]        
-    if wavelength > 3000 : orders = [16,24]
-    if wavelength > 4000 : orders = [12,16]    
+    order = 64
+    if wavelength > 1000 : order = 48
+    if wavelength > 1500 : order = 32        
+    if wavelength > 3000 : order = 24
+    if wavelength > 4000 : order = 16    
+ 
+    if not efunc: efunc = lambda x: np.clip(x, 0.1, 0.1) 
 
     deg = Tomasko['lo']['deg'] 
     dom = np.cos(deg*3.141592653589793/180)
     phase= Tomasko['lo']["{:.0f}".format(wavelength*10.)]
 
-    if not efunc: efunc = lambda x: np.clip(x, 0.1, 0.1) 
+    coeff = phase_fit(deg, phase, order, 
+                      efunc=efunc)
+    fit = legendre_eval(dom, coeff)
+    ax.semilogy(deg, fit, 'k--', lw=2, label="fit <80 km, n={:d}".format(order))
+    axr.plot(deg, (fit-phase)/phase, 'k--', lw=2,  drawstyle='steps-mid')
+    axr.plot(deg, efunc(deg), 'k--', lw=1, color='gray')
+    axr.plot(deg, -efunc(deg), 'k--', lw=1, color='gray')
 
-    for n_order in orders:
-        coeff = phase_fit(deg, phase, n_order, 
-                          efunc=efunc)
-        fit = legendre_eval(dom, coeff)
-        ax.semilogy(deg, fit, lw=2, label="n={:d}".format(n_order))
-        axr.plot(deg, (fit-phase)/phase,                    
-                ls='--', drawstyle='steps-mid', lw=2, alpha=0.5,)
-        axr.plot(deg, efunc(deg), 'k--', lw=2, alpha=0.15,)
+    ax.scatter(deg, Tomasko['hi']["{:.0f}".format(wavelength*10.)], label='DISR >80 km', 
+            s=80, marker='s', facecolor='none', edgecolor='black', linewidth=1)
 
-    ax.plot(deg, Tomasko['hi']["{:.0f}".format(wavelength*10.)], 
-            'ro', drawstyle='steps-mid', lw=2, alpha=0.6)
+    ax.scatter(deg, Tomasko['lo']["{:.0f}".format(wavelength*10.)], label='DISR <80 km',  
+            s=80, marker='x', facecolor='none', edgecolor='black', linewidth=1)
 
-    ax.plot(deg, Tomasko['lo']["{:.0f}".format(wavelength*10.)], 
-            'ks', drawstyle='steps-mid', lw=2,)
-    ax.text(20, 400, "{:4.1f}nm".format(wavelength), fontsize=12)
+    deg = Tomasko['hi']['deg'] 
+    dom = np.cos(deg*3.141592653589793/180)
+    phase= Tomasko['hi']["{:.0f}".format(wavelength*10.)]
+
+    coeff = phase_fit(deg, phase, order, efunc=efunc)
+    fit = legendre_eval(dom, coeff)
+    ax.semilogy(deg, fit, 'k:', lw=2, label="fit >80 km, n={:d}".format(order))
+    axr.plot(deg, (fit-phase)/phase, 'k:', drawstyle='steps-mid', lw=2, )
+
+    ax.set_xlim(0,180)
+    ax.text(10, 400, "{:4.1f}nm".format(wavelength), fontsize=12)
 
     ax.xaxis.set_ticklabels([])
     ax.yaxis.set_ticklabels(['','','-1','0','1','2','3'])
     ax.set_ylabel(r'phase function, log $P\,(\theta)$')
-    ax.legend(fontsize=10)
+    ax.legend(fontsize=10, 
+              scatterpoints=1,
+              handlelength=3)
     ax.set_ylim(7e-2,1e3)
-    axr.set_ylabel('residuals, %') ; axr.set_ylim(-0.25,0.25)
+    axr.set_ylabel('residuals') ; axr.set_ylim(-0.25,0.25)
     axr.set_xlabel(r'scattering phase angle, $\theta$ (deg)')
 
 def show_phase_function_fits(plotname=None):
