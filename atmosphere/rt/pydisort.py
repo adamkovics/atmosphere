@@ -47,11 +47,7 @@ def mono(mono_input):
         
     for i in range(ds.nlyr) : dtauc[i] = float(mono_input['dtau'][i])
     for i in range(ds.nlyr) : ssalb[i] = float(mono_input['ssalb'][i])
-
-    #Scattering phase function moments the same in all layers
-    phase_moments = mono_input['pmom']
-    for i in range(ds.nlyr*(ds.nmom+1)):
-        pmom[i] = float(phase_moments[np.mod(i, ds.nmom+1)])
+    for i in range(ds.nlyr*(ds.nmom+1)): pmom[i] = float(mono_input['pmom'][i])
         
     umu[0]   = float(mono_input['umue'])
     phi[0]   = float(mono_input['phie'])
