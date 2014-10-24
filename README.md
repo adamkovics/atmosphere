@@ -37,11 +37,8 @@ or for cshell add the following line,
 to the shell configuration file $HOME/.cshrc
 
 The directory can be located anywhere, and will be created
-if it does not exist when using the following method to 
-download reference data:
-
-      atmosphere.get_reference_data()
-
+if it does not exist when downloading the reference data 
+in the following step.
 
 3. Download reference data files. 
 
