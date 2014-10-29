@@ -82,12 +82,16 @@ def CH4_Niemann(z, pressure=False):
     in which case input z is in units of (mbar) .    
     """
 
+    from scipy.interpolate import interp1d
+
     if pressure:
-        m_CH4 = np.interp(z, Niemann['P'], Niemann['CH4']/100.)
+        f_CH4 = interp1d(Niemann['P'], Niemann['CH4']/100., 
+                         bounds_error=False, fill_value=0.015)
+        m_CH4 = f_CH4(z) 
     else:
-        m_CH4 = np.interp(np.log10(z), 
-                          np.log10(Niemann['alt']), 
-                          Niemann['CH4']/100.,)
+        f_CH4 = interp1d(np.log10(Niemann['alt']), Niemann['CH4']/100., 
+                         bounds_error=False, fill_value=0.015)
+        m_CH4 = f_CH4(np.log10(z))
 
     return m_CH4
 
