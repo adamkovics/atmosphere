@@ -13,11 +13,9 @@ line-by-line methods and the HITRAN2012 line list.
 
 __Installation__
 
-1. Download the source files and run:
+0. Check Dependencies (e.g., SWIG)
 
-	python setup.py install
-
-2. Set the environment variable, RTDATAPATH
+1. Set the environment variable, RTDATAPATH
 
 This is where the reference data files will be located.
 For example, put the following line:
@@ -40,6 +38,11 @@ The directory can be located anywhere, and will be created
 if it does not exist when downloading the reference data 
 in the following step.
 
+2. Download the source files and run:
+
+	python setup.py install
+
+
 3. Download reference data files. 
 
 From a python interpreter or notebook:
@@ -47,9 +50,16 @@ From a python interpreter or notebook:
 	import atmosphere as atm
 	atm.refdata.setup_directory()
 
+
 __Dependencies__
 
 1. SWIG 
+
+	Example:
+		a. Download from swig.org
+		b. ./configure --without-pcre
+		c. sudo make install
+
 2. Python packages:
 
 	numpy
