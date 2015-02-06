@@ -6,14 +6,14 @@ setup.py file for atmosphere package
 from setuptools import setup, Extension
 
 cdisort = Extension('_cdisort',
-                     sources=[#'src/cdisort.i',
+                     sources=['src/cdisort.i',
                               'src/cdisort.c',
                               'src/locate.c',
                               'src/disotest.c',
                      		  ],
-                     extra_compile_args=['-fno-strict-aliasing',
-                                         '-fno-common',
-                                         '-dynamic',
+                     extra_compile_args=[#'-fno-strict-aliasing',
+                                         #'-fno-common',
+                                         #'-dynamic',
                                          ],
                     )
 
