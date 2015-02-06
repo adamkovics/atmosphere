@@ -53,12 +53,21 @@ From a python interpreter or notebook:
 
 __Dependencies__
 
-1. SWIG 
+1. SWIG version 3.0.2
+   (the most recent version 3.0.5 doesn't work)
 
-	Example:
+	Example Installation:
+	
 		a. Download from swig.org
+	
 		b. ./configure --without-pcre
-		c. sudo make install
+	
+		c. sudo make
+
+		d. sudo make install
+
+	Version 3.0.5 creates a _cdisort.so module with "_swigconstant"
+	added inconsistently. Use earlier version instead.
 
 2. Python packages:
 
