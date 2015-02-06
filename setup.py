@@ -3,7 +3,16 @@
 setup.py file for atmosphere package
 """
 
+import sys
 from setuptools import setup, Extension
+
+if sys.platform == 'darwin':
+   extra_compile_args=['-fno-strict-aliasing',
+                       '-fno-common',
+                       '-dynamic',
+                       ]
+else:
+   extra_compile_args=None
 
 cdisort = Extension('_cdisort',
                      sources=['src/cdisort.i',
@@ -11,10 +20,7 @@ cdisort = Extension('_cdisort',
                               'src/locate.c',
                               'src/disotest.c',
                      		  ],
-                     extra_compile_args=[#'-fno-strict-aliasing',
-                                         #'-fno-common',
-                                         #'-dynamic',
-                                         ],
+                     extra_compile_args=extra_compile_args,
                     )
 
 setup(name='atmosphere',
