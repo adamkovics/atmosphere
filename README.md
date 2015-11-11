@@ -11,6 +11,11 @@ by Cassini Huygens. Methane opacities (k-coefficients) calculated
 for VLT SINFONI spectral plate scale and resolution using
 line-by-line methods and the HITRAN2012 line list. 
 
+Description of the model published in:
+
+	Adamkovics et al., (2015), Icarus,
+	(http://dx.doi.org/10.1016/j.icarus.2015.05.023)
+
 __Installation__
 
 0. Check Dependencies (e.g., SWIG)

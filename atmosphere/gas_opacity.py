@@ -65,6 +65,25 @@ def append_kc_to_layers(model, kc, species):
                                                              kc)
     return
 
+
+# There are additional k-coefficients for C2H2, C2H6, and CO. 
+# These  are currently calculated on the VIMS grid as they are applicable in 
+# roughly the 2.7--3um wavelength region that is inacccessible from the ground.
+#
+# Here we revise the gas opacity in the model to include multiple k-coefficient files. 
+#
+# It is a reasonable estimate to sum k-coefficients after interpolating each onto the 
+# same pressure and temperature, however, a minimal amount of error-checking should confirm
+# that the same wavelength grid and g-ordinates are being used.
+#
+# Overview of revisions to the code:
+#
+#    (1) Generalization of the set_methane() to other species.
+#    (2) Error-checking for wavelength (and P,T) grid
+#    (3) back-compatibility for set_methane() method.
+#    (4) Some thought to CH3D abundance variability.
+#
+
 def set_methane(model, kc_file, CH3D_scale=None, verbose=False):
     """Set methane opacities in atmosphere structure, model, by 
     interpolatating k-coefficents from the specied kc_file,
