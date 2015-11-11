@@ -74,7 +74,7 @@ def set_abundances(model, trace_gas={'m_H2':0.001}):
     set_trace_gas(model['layers'], **trace_gas)
     return model
 
-def CH4_Niemann(z, pressure=False):
+def CH4_Niemann(z):
     """Return a linearly interpolated value of the CH4 mole fraction
     from Huygens GCMS measurement. Niemann et al., 2010.
     
@@ -84,14 +84,11 @@ def CH4_Niemann(z, pressure=False):
 
     from scipy.interpolate import interp1d
 
-    if pressure:
-        f_CH4 = interp1d(Niemann['P'], Niemann['CH4']/100., 
-                         bounds_error=False, fill_value=0.015)
-        m_CH4 = f_CH4(z) 
-    else:
-        f_CH4 = interp1d(np.log10(Niemann['alt']), Niemann['CH4']/100., 
-                         bounds_error=False, fill_value=0.015)
-        m_CH4 = f_CH4(np.log10(z))
+    f_CH4 = interp1d(np.log10(Niemann['alt']), Niemann['CH4']/100., 
+                     bounds_error=False, fill_value=Niemann['CH4'][-1]/100.)
+    m_CH4 = f_CH4(np.log10(z))
+    iz, = np.where(z > np.max(Niemann['alt']))
+    m_CH4[iz] = Niemann['CH4'][0]/100.,
 
     return m_CH4
 
