@@ -95,7 +95,7 @@ def CH4_Niemann(z, pressure=False):
 
     return m_CH4
 
-def integrate_CH4_column(layers, nlev=10, CH4_scale=None, verbose=False):
+def integrate_CH4_column(layers, nlev=10, verbose=False):
     """Interpolate the CH4 column in layers using nlev sublevels
        and return columns in units of km amagats."""
     
@@ -112,9 +112,6 @@ def integrate_CH4_column(layers, nlev=10, CH4_scale=None, verbose=False):
         z = altitude_at_pressure(levels)
         n = density_at_pressure(levels)
         m_CH4 = CH4_Niemann(z)
-        if CH4_scale:
-            if np.max(z) < 30:
-                m_CH4 *= CH4_scale
         N_CH4[i] = np.trapz(n*m_CH4, -z*1e5)/amg/1e5
         line = "{:>2d}"+"{:^12.2e}"*7
         if verbose:
