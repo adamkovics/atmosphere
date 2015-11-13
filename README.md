@@ -5,10 +5,10 @@ A Near-IR radiative transfer model of Titan's atmosphere.
 
 __Summary__
 
-IPython notebooks describe examples of code used in the
+Jupyter notebooks describe examples of code used in the
 atmosphere package. The atmospheric structure is based on observations
 by Cassini Huygens. Methane opacities (k-coefficients) calculated 
-for VLT SINFONI spectral plate scale and resolution using
+for various spectral plate scales (resolutions) using
 line-by-line methods and the HITRAN2012 line list. 
 
 Description of the model published in:
@@ -18,7 +18,7 @@ Description of the model published in:
 
 __Installation__
 
-0. Check Dependencies (e.g., SWIG)
+0. Check Dependencies (e.g., SWIG). Swig 3.0.7 seems to work. 
 
 1. Set the environment variable, RTDATAPATH
 
@@ -58,8 +58,14 @@ From a python interpreter or notebook:
 
 __Dependencies__
 
-1. SWIG version 3.0.2
-   (the most recent version 3.0.5 doesn't work)
+1. SWIG 
+
+    The most recent version 3.0.7, which can be installed 
+    with brew, should work. 
+    
+    Previous working version is 3.0.2
+   
+    (caution: version 3.0.5 doesn't work)
 
 	Example Installation:
 	
@@ -81,7 +87,7 @@ __Dependencies__
 	matplotlib
 	pyfits
 
-Running in the IPython notebook is recommended but not necessary.
+Running in the Jupyter notebook is recommended but not necessary.
 The [CDISORT](http://www.libradtran.org/bin/cdisort-2.1.3.tar.gz) 
 implementation included here, provided by Tim Dowling via 
 [libradtran](http://www.libradtran.org/) requires SWIG for 
