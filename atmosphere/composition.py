@@ -61,46 +61,40 @@ data = """
 
 Niemann = np.genfromtxt(io.BytesIO(data.encode()), names=True)
 
+
 def set_abundances(model, trace_gas={'m_H2':0.001}):
     """Set the chemical composition in each layer for an atmosphere 
     model that is returned by the `set_HASI_structure()` method. 
     """
-
     model['layers'].update(
-        {'m_CH4':CH4_Niemann(model['layers']['z']),
-         'N_CH4':integrate_CH4_column(model['layers']),
-         })
-
+        {'m_CH4':np.array([CH4_Niemann(z) for z in model['layers']['z']]),
+         'N_CH4':integrate_Niemann(model['layers']),
+         }
+    )
     set_trace_gas(model['layers'], **trace_gas)
     return model
 
-def CH4_Niemann(z, pressure=False):
-    """Return a linearly interpolated value of the CH4 mole fraction
-    from Huygens GCMS measurement. Niemann et al., 2010.
-    
-    Input z is altitude (km) unless pressure=True, 
-    in which case input z is in units of (mbar) .    
+def CH4_Niemann(z):
+    """Return a linearly interpolated values of the CH4 mole fraction
+    from Huygens GCMS measurement. Niemann et al., 2010, at altidudes, z [km].
     """
-
     from scipy.interpolate import interp1d
+    f_CH4 = interp1d(np.log10(Niemann['alt']), Niemann['CH4'], 
+                     bounds_error=False, fill_value=np.nan)
+    m_CH4 = f_CH4(np.log10(z))
+    if z > np.max(Niemann['alt']):
+        m_CH4 = Niemann['CH4'][0]
+    if z < np.min(Niemann['alt']):
+        m_CH4 = Niemann['CH4'][-1]
 
-    if pressure:
-        f_CH4 = interp1d(Niemann['P'], Niemann['CH4']/100., 
-                         bounds_error=False, fill_value=0.015)
-        m_CH4 = f_CH4(z) 
-    else:
-        f_CH4 = interp1d(np.log10(Niemann['alt']), Niemann['CH4']/100., 
-                         bounds_error=False, fill_value=0.015)
-        m_CH4 = f_CH4(np.log10(z))
+    return m_CH4/100.
 
-    return m_CH4
-
-def integrate_CH4_column(layers, nlev=10, CH4_scale=None, verbose=False):
+def integrate_Niemann(layers, nlev=10, verbose=False):
     """Interpolate the CH4 column in layers using nlev sublevels
        and return columns in units of km amagats."""
-    
     nlay = len(layers['p'])
     N_CH4 = np.ndarray(nlay)
+    m_CH4 = np.ndarray(nlev)
     if verbose:        
         header = '{:>2s}'+'{:^12s}'*7
         print(header.format('i','N_CH4','min(m_CH4)','max(m_CH4)'
@@ -111,10 +105,8 @@ def integrate_CH4_column(layers, nlev=10, CH4_scale=None, verbose=False):
         levels = np.linspace(p_min, p_max, nlev)
         z = altitude_at_pressure(levels)
         n = density_at_pressure(levels)
-        m_CH4 = CH4_Niemann(z)
-        if CH4_scale:
-            if np.max(z) < 30:
-                m_CH4 *= CH4_scale
+        for j in range(nlev):
+            m_CH4[j] = CH4_Niemann(z[j])
         N_CH4[i] = np.trapz(n*m_CH4, -z*1e5)/amg/1e5
         line = "{:>2d}"+"{:^12.2e}"*7
         if verbose:

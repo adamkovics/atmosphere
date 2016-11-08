@@ -49,3 +49,5 @@ __all__ = ['composition',
            'gas_opacity',
            'refdata'
            ]
+
+__version__ = '0.0.4'

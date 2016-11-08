@@ -24,7 +24,7 @@ cdisort = Extension('_cdisort',
                     )
 
 setup(name='atmosphere',
-      version='0.0.1',
+      version='0.0.4',
       description='Radiative transfer model for planetary atmospheres.',
       install_requires=['numpy','scipy','pyfits'],
       author='Mate Adamkovics',

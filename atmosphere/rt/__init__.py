@@ -8,8 +8,8 @@ Modules:
 	twostream - Fast numerical solver for heterogenous layers
 
 """
-from . import parallel
+
 from . import twostream
 from . import pydisort
 
-__all__ = ['parallel','twostream','pydisort']
+__all__ = ['twostream','pydisort']
