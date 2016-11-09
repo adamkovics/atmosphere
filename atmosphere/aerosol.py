@@ -3,8 +3,10 @@ Aerosol opacity structure (vertical distribution) and scattering
 phase functions as measured by DISR on the Huygens probe.
 """
 
-import numpy as np
 import os
+import numpy as np
+import logging
+logger = logging.getLogger()
 
 pi = 3.141592653589793
 
@@ -23,8 +25,7 @@ def set_opacity(model, method='altitude'):
     the method keyword."""
     
     if 'wavelength' not in model.keys():
-        print('WARNING: Set wavelength scale first (e.g., with CH4 opacity.)')
-        return None
+        logger.WARNING('WARNING: Set wavelength scale first (e.g., with CH4 opacity.)')
     
     tau = {'low':6.270e2  * (1e3*model['wavelength'])**(-0.9706), 
            'mid':2.029E4  * (1e3*model['wavelength'])**(-1.409 ),     

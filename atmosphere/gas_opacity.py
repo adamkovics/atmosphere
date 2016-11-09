@@ -3,6 +3,8 @@ Add gas opacities to model based on the composition and vertical structure.
 """
 
 import numpy as np
+import logging
+logger = logging.getLogger()
 
 def interpolate_kc(p, T, kc, verbose=False):
     """Linearly interpolate k-coefficients at a particular 
@@ -35,17 +37,7 @@ def interpolate_kc(p, T, kc, verbose=False):
     L2T = L21 + (L22-L21)*(T-temperatures[j])/(temperatures[j+1]-temperatures[j])
     LPT = L1T + (L2T-L1T)*((np.log(p)-np.log(pressures[i]))/
                            (np.log(pressures[i+1])-np.log(pressures[i])))
-
     kc_interp = np.exp(LPT)
-
-    if verbose:
-        ik, ig = 100, 2
-        print("Input p ={:8.2e} mbar,  T={:5.1f}K".format(p,T))
-        print("'bracketting' array values:\n {:8.2e} -- {:8.2e} mbar\n {:8.1f} --{:8.1f}K".format(
-                pressures[i], pressures[i+1], temperatures[j], temperatures[j+1]))
-        print("A grid of kc-values at i_wavlength={:d}, ig={:d}:".format(ik, ig))
-        print(kc['kc'][ik,i:i+2,j:j+2,ig])
-        print("interpolated value: {:12.3e}".format(kc_interp[ik,ig]))
     return kc_interp
 
 def append_kc_to_layers(model, kc, species):
@@ -92,7 +84,7 @@ def set_methane(model, kc_file, CH3D_scale=None, verbose=False):
 
     if CH3D_scale:
         if len(kc_file) != 2:
-            print('two k-coefficient files needed for set_methane_opacity()')
+            logger.debug('two k-coefficient files needed for set_methane_opacity()')
             return None
         kc = np.load(kc_file[0]).item()
         kc_CH3D = np.load(kc_file[1]).item()
@@ -145,18 +137,17 @@ def set_methane(model, kc_file, CH3D_scale=None, verbose=False):
         model['layers']['tau'].update({'CH4':tau_CH4})
 
     return
-    
 
 def print_atmosphere_details(model):
-    print('model dictionary data structure:')
+    logger.debug('model dictionary data structure:')
     for item in model.keys():
-        print("{0:7s} -  type: {2} - shape: {1}".format(
-            item, shape(model[item]), type(model[item])))
+        logger.debug("{0:7s} -  type: {2} - shape: {1}".format(
+            item, np.shape(model[item]), type(model[item])))
 
-    print("\natmosphere['layers'] dictionary data structure:")
+    logger.debug("\natmosphere['layers'] dictionary data structure:")
     for item in model['layers'].keys():
-        print("{0:7s} -  type: {2} - shape: {1}".format(
-            item, shape(model['layers'][item]), type(model['layers'][item])))
+        logger.debug("{0:7s} -  type: {2} - shape: {1}".format(
+            item, np.shape(model['layers'][item]), type(model['layers'][item])))
 
 def set_cia(model, scale=4.0, show_figure=False):
     """Append collision-induced-absorption opacity for
@@ -177,7 +168,7 @@ def set_cia(model, scale=4.0, show_figure=False):
     fits.close()
 
     if 'wavelength' not in model.keys():
-        print('WARNING: Set wavelength scale first (e.g., with CH4 opacity.)')
+        logger.warning('Set wavelength scale first (e.g., with CH4 opacity.)')
         return None
     
     tau_H2N2 = np.empty((model['nlay'],model['nlam']))

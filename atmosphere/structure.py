@@ -1,5 +1,8 @@
-import numpy as np
 import os
+import numpy as np
+import logging
+logger = logging.getLogger()
+
 datapath  = os.getenv('RTDATAPATH')
 file_HASI = os.path.join(datapath,
                          'atmosphere_structure/titan/',
@@ -10,13 +13,11 @@ dtype_HASI = [('time', int), # time [milliseconds]
               ('p', float),  # pressure [Pa]
               ('T', float),  # temperature [K]
               ('n', float)]  # densitgy [kg/m^3]
-try:
-  HASI = np.genfromtxt(file_HASI, dtype=dtype_HASI) 
-  HASI['z'] *= 1e-3 # convert [m] to [km]
-  HASI['p'] *= 0.01 # convert [Pa] to [mbar]
-  HASI['n'] *= 1e3 * 1e-6 * 6.0221e23 / 27.8  # convert [kg/m^3] to [cm-3]
-except:
-  None
+
+HASI = np.genfromtxt(file_HASI, dtype=dtype_HASI) 
+HASI['z'] *= 1e-3 # convert [m] to [km]
+HASI['p'] *= 0.01 # convert [Pa] to [mbar]
+HASI['n'] *= 1e3 * 1e-6 * 6.0221e23 / 27.8  # convert [kg/m^3] to [cm-3]
 
 amg = 2.6867805e19 # [cm-3]
 
@@ -35,7 +36,7 @@ def HASI_conversion(alt, outp, warnings=False):
         try:
             return func(z)
         except ValueError:
-            if warnings: print('WARNING: z outside of HASI range, extrapolating.')
+            logging.warning('WARNING: z outside of HASI range, extrapolating.')
             func = interp1d(HASI[alt], HASI[outp], bounds_error=False)
             out = func(z)
             if out.size == 1:
@@ -133,9 +134,8 @@ def set_HASI_structure(nlev=25, method='split_at_tropopause'):
                        'split_at_tropopause':split_at_tropopause,
                        'equal_columns':equal_columns,
                        }
-    
+
     levels = altitude_scheme[method]()
-        
     nlev = len(levels)
     nlay = nlev-1    
     layers = {'p':np.ndarray(nlay), 'p_min':np.ndarray(nlay), 'p_max':np.ndarray(nlay),
@@ -325,20 +325,3 @@ def layer_column_density(p_min, p_max, nlev=10):
     n_int = np.trapz(n,z)
 
     return n_int
-
-def test_layer_column_integration():
-    model = set_structure(HASI, nlev=17)
-    layers = model['layers']
-    km_am = layers['dz']*layers['n']*3.73e-20
-    print("{:^3s}{:>10s}{:>10s}{:>8s}{:>10s}{:>10s}{:>8s}".format(
-          "i", "p_min", "p_min", "N_bar", "N_int(10)", "N_int(20)","dN(%)"))
-    for i in range(model['nlay']):
-        km_am_int = layer_column_density(layers['p_min'][i], 
-                                         layers['p_max'][i], 
-                                         nlev=20)*3.73e-20
-        print("{:>3d}{:10.3f}{:10.3f}{:8.3f}{:10.3f}{:10.3f}{:8.2f}".format(
-              i, layers['p_min'][i], layers['p_max'][i],
-              km_am[i], 
-              layer_column_density(layers['p_min'][i], layers['p_max'][i])*3.73e-20,
-              km_am_int,
-              100*(km_am_int-km_am[i])/km_am_int, ))

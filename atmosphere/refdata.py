@@ -4,6 +4,9 @@ create a near-IR spectrum of Titan and methods to download data
 from web and create reference data direcotry structure. 
 """
 
+import logging
+logger = logging.getLogger()
+
 file_list = [
     'atmosphere_structure/titan/HASI_L4_ATMO_PROFILE_DESCEN.TAB',
     'aerosol/titan/Tomasko2007_phase_0-80km.TAB',
@@ -13,7 +16,6 @@ file_list = [
     'gas_opacity/kc_CH4.SINFONI.v08.dnu_3.0.fits',
     'gas_opacity/kc_CH4.VIMS.v08.fits',
     ]
-
 
 def get_from_url(fname, url='http://astro.berkeley.edu/~madamkov/refdata/'):
     """Download reference data from server."""
@@ -26,18 +28,18 @@ def get_from_url(fname, url='http://astro.berkeley.edu/~madamkov/refdata/'):
 
     if sys.version_info.major > 2:        
         try:
-            print('Downloading...: {:s}'.format(url+fname))
+            logger.info('Downloading...: {:s}'.format(url+fname))
             urllib.request.urlretrieve(url+fname, ref_path)
-            print('          done.')
+            logger.info('          done.')
         except:
-            print('Problem with {:s}'.format(url+fname))
+            logger.info('Problem with {:s}'.format(url+fname))
     else:
         try:
-            print('Downloading...: {:s}'.format(url+fname))
+            logger.info('Downloading...: {:s}'.format(url+fname))
             urllib.urlretrieve(url+fname, ref_path)
-            print('          done.')
+            logger.info('          done.')
         except:
-            print('Problem with {:s}'.format(url+fname))
+            logger.info('Problem with {:s}'.format(url+fname))
     return
 
 def setup_directory():
@@ -52,8 +54,8 @@ def setup_directory():
         ref_subdir = os.path.dirname(ref_path)
         if not os.path.exists(ref_subdir):
             os.makedirs(ref_subdir)
-            print('Creating directory: {:s}'.format(ref_subdir))
+            logger.info('Creating directory: {:s}'.format(ref_subdir))
         if not os.path.exists(ref_path): 
             get_from_url(fname)
         else:
-            print('Reference data exists: {:s}'.format(ref_path))
+            logger.info('Reference data exists: {:s}'.format(ref_path))
