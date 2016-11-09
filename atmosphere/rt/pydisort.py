@@ -181,7 +181,6 @@ def calculate_spectrum(model) :
                         })
     return
 
-
 def async_spectrum(model) :
         
     from numpy import zeros, sum, abs, ndarray, floor, mod

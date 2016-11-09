@@ -70,7 +70,7 @@ Python packages used:
 	numpy
 	scipy
 	matplotlib
-	pyfits
+	astropy
 
 Running in the Jupyter notebook is recommended but not necessary.
 The [CDISORT](http://www.libradtran.org/bin/cdisort-2.1.3.tar.gz) 
