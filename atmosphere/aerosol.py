@@ -1,6 +1,8 @@
 """
+
 Aerosol opacity structure (vertical distribution) and scattering 
 phase functions as measured by DISR on the Huygens probe.
+
 """
 
 import os
@@ -16,8 +18,10 @@ try:
     Tomasko = {'lo':np.genfromtxt(datapath+'Tomasko2007_phase_0-80km.TAB',  names=True),
                'hi':np.genfromtxt(datapath+'Tomasko2007_phase_80-200km.TAB', names=True)}
 except:
-    None
-
+    url = 'http://w.astro.berkeley.edu/~madamkov/refdata/aerosol/titan/'
+    Tomasko = {'lo':np.genfromtxt(url+'Tomasko2007_phase_0-80km.TAB',  names=True),
+               'hi':np.genfromtxt(url+'Tomasko2007_phase_80-200km.TAB', names=True)}
+    
 def set_opacity(model, method='altitude'):
     """Set aerosol haze opacity for atmosphere data structure, model, using
     a verticual distribution that is consistent with the total Huygens/DISR
