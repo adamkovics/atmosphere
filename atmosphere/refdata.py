@@ -13,7 +13,7 @@ file_list = [
     'aerosol/titan/Tomasko2007_phase_80-200km.TAB',
     'gas_opacity/CIA/N2_N2.fits',
     'gas_opacity/CIA/H2_N2.fits',
-    'gas_opacity/kc_CH4.SINFONI.v08.dnu_3.0.fits',
+#    'gas_opacity/kc_CH4.SINFONI.v08.dnu_3.0.fits',
     'gas_opacity/kc_CH4.VIMS.v08.fits',
     ]
 
