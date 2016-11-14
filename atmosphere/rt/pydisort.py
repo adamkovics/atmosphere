@@ -1,9 +1,11 @@
 """
-Wrapper methods for CDISORT
+
+Methods for running CDISORT radiative tranfer via Python/SWIG wrappers
+for atmospheric data structures generated with the atmosphere package.
+
 """
 
 __version__ = '0.0.4'
-
 
 from time import time
 import numpy as np
