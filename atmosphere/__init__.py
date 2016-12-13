@@ -37,11 +37,16 @@ Source availabe from:
 	https://github.com/adamkovics/atmosphere
 
 """
-from atmosphere import composition
-from atmosphere import structure
-from atmosphere import aerosol
-from atmosphere import gas_opacity
-from atmosphere import refdata
+
+try:
+  from atmosphere import composition
+  from atmosphere import structure
+  from atmosphere import aerosol
+  from atmosphere import gas_opacity
+  from atmosphere import refdata
+except:
+  None
+
 
 __all__ = ['composition',
            'structure',
